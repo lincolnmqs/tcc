@@ -1,0 +1,90 @@
+<!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index.php" class="brand-link">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Logotipo_IFET.svg/573px-Logotipo_IFET.svg.png"
+           class="brand-image"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">Sistema Web - Biblioteca</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a class="d-block" id="usuarioLogado"></a>
+        </div>
+        <div class="info" type="button" onclick="chamadaLogout()" style="color: white;">
+          Sair
+        </div>
+      </div>
+      <div class="sessao" id="timeSession" style="color: white;"></div>
+      
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-sort"></i>
+              <p>
+                MENU
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <?php
+                function multiexplode ($delimiters, $string) {
+                    $ready = str_replace($delimiters, $delimiters[0], $string);
+                    $launch = explode($delimiters[0], $ready);
+                    return  $launch;
+                }
+
+                $pasta = '../forms/';
+
+                $arquivos = glob("$pasta{*.php}", GLOB_BRACE);
+
+                foreach($arquivos as $pag){
+                  $valor = multiexplode(array("/","."), $pag);
+                
+                  if($valor[4] == "base" || $valor[4] == "index") continue;
+
+                  $pagina = $valor[4];
+              ?>
+              <li class="nav-item">
+                <a href="<?php echo $valor[4]; ?>.php" class="nav-link">
+                  <i class="far fa-folder nav-icon"></i>
+                  <p><?php 
+                      $split = explode('_', $pagina);
+
+                      $num = count($split);
+
+                      if($num > 1){
+                        for($i=0; $i<$num; $i++){
+                          $split[$i][0] = strtoupper($split[$i][0]);
+
+                          echo $split[$i] . ' ';
+                        }
+                      }
+                      
+                      else {
+                        $pagina[0] = strtoupper($pagina[0]);
+
+                        echo $pagina; 
+                      }
+                    ?></p>
+                </a>
+              </li>
+              <?php
+                }
+              ?>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

@@ -1,0 +1,159 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="../../dist/css/login.css">
+
+    <link rel="icon" href="Favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <title>IFSULDEMINAS</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+    <div class="container">
+        <a class="navbar-brand" href="#">IFSULDEMINAS</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://portal.ifsuldeminas.edu.br" target="_blank">Site</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<main class="login-form">
+    <div class="cotainer">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        <form action="" method="">
+                            <div class="form-group row">
+                                <label for="cpf" class="col-md-4 col-form-label text-md-right">CPF</label>
+                                <div class="col-md-6">
+                                    <input type="text" id="cpfLogin" class="form-control" name="cpf" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="senha" class="col-md-4 col-form-label text-md-right">Password</label>
+                                <div class="col-md-6">
+                                    <input type="password" id="senhaLogin" class="form-control" name="senha" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="button" onclick="chamadaLogin()" class="btn btn-primary">
+                                    Login
+                                </button>
+                            </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</main>
+
+<script>
+    const apiURL = 'http://localhost:8000/api/auth/login';
+
+    async function chamadaLogin() {
+        try {
+            const cpfLogin = document.querySelector('#cpfLogin').value;
+            const senhaLogin = document.querySelector('#senhaLogin').value;
+
+            const dados = await this.loginAPI({
+                cpf_pessoas: cpfLogin,
+                senha_pessoas: senhaLogin
+            });
+
+            window.localStorage.setItem('access_token', dados.access_token);
+            window.localStorage.setItem('user_cpf', cpfLogin);
+
+            let data = new Date();
+            data.setDate(data.getDate() + 1);
+            window.localStorage.setItem('expires_in', data);
+
+            window.location.href = 'index.php';
+            
+        } catch (error) {
+            notificacaoDeErro('Erro ao Logar-se', error);
+        }
+    }
+
+    function loginAPI(dadosParaLogin){
+        return new Promise(async (next, reject) => {
+        const body = JSON.stringify(dadosParaLogin);
+
+        try {
+            const chamada = await fetch(apiURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body
+            });
+
+            const dados = await chamada.json();
+
+            next(dados);
+        } catch(erro) {
+            console.log(erro);
+        }
+        });
+    }
+
+    function notificacaoDeErro(titulo, mensagem) {
+        $.notify({
+            icon: 'flaticon-alarm-1',
+            title: titulo,
+            message: mensagem,
+        },{
+            element: 'body',
+            type: "info",
+            allow_dismiss: true,
+            placement: {
+            from: "top",
+            align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 3000,
+            timer: 1000,
+            animate: {
+            enter: 'animated fadeInDown',
+            exit: 'animated fadeOutUp'
+            },
+        });
+    }
+</script>
+
+</body>
+</html>
